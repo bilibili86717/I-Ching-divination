@@ -128,7 +128,12 @@
 
             <div class="btn-row">
                 <button class="btn ghost" id="btn-restart">重新起卦</button>
+                <button class="btn secondary" id="btn-local-interpret">本地解卦</button>
                 <button class="btn primary" id="btn-share">复制卦象 去AI解读</button>
+            </div>
+
+            <div class="interpret-card hidden" id="local-interpret-display">
+                <!-- 本地解卦内容将动态生成 -->
             </div>
 
             <p class="version">东观易 v2025.6.12 · 大衍筮法</p>
@@ -137,6 +142,7 @@
     </div>
 
     <script src="guaData.js"></script>
+    <script src="dayan.js"></script>
     <script src="main.js"></script>
     <script>
         if ('serviceWorker' in navigator) {

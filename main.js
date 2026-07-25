@@ -155,6 +155,132 @@
         } catch (e) {}
     }
 
+    // —— 本地解卦逻辑 ——
+    function generateInterpretation() {
+        var r = state.result;
+        var orig = r.originalGua;
+        var chg = r.changedGua;
+        var movingLines = [];
+        
+        r.yaoResults.forEach(function(yao, i) {
+            if (yao.isMoving) {
+                movingLines.push(i + 1);
+            }
+        });
+        
+        var movingYaoText = '';
+        if (movingLines.length > 0 && orig.yaoTexts) {
+            movingLines.forEach(function(lineNum) {
+                var yao = orig.yaoTexts.find(function(y) { return y.position === lineNum; });
+                if (yao) {
+                    movingYaoText += '<div class="moving-yao-item">' +
+                        '<div class="moving-yao-header">【第' + lineNum + '爻】' + yao.text + '</div>' +
+                        '<div class="moving-yao-trans">' + yao.translation + '</div>' +
+                        '<div class="moving-yao-inter">' + yao.interpretation + '</div>' +
+                        '</div>';
+                }
+            });
+        }
+        
+        var hexagramText = orig.hexagramText || '';
+        var hexagramTrans = orig.hexagramTranslation || '';
+        
+        var advice = generateAdvice(orig, chg, movingLines);
+        
+        return {
+            movingYaoText: movingYaoText,
+            hexagramText: hexagramText,
+            hexagramTrans: hexagramTrans,
+            advice: advice
+        };
+    }
+    
+    function generateAdvice(orig, chg, movingLines) {
+        var advice = '';
+        var keywords = getKeywords(state.question);
+        
+        if (movingLines.length > 0) {
+            advice += '<strong>动爻指引：</strong>';
+            movingLines.forEach(function(lineNum) {
+                var yao = orig.yaoTexts ? orig.yaoTexts.find(function(y) { return y.position === lineNum; }) : null;
+                if (yao) {
+                    advice += '第' + lineNum + '爻提示「' + yao.interpretation + '」，';
+                }
+            });
+            advice += '<br>';
+        }
+        
+        advice += '<strong>本卦启示：</strong>' + (orig.summary.text || '') + '<br>';
+        
+        if (chg && chg !== orig) {
+            advice += '<strong>变卦指引：</strong>由「' + orig.name + '」变为「' + chg.name + '」，提示「' + (chg.summary.text || '') + '」<br>';
+        }
+        
+        if (keywords.length > 0) {
+            advice += '<strong>事项建议：</strong>';
+            keywords.forEach(function(k) {
+                advice += getKeywordAdvice(k, orig, chg);
+            });
+        }
+        
+        return advice;
+    }
+    
+    function getKeywords(question) {
+        var keywordMap = {
+            '工作': ['工作', '事业', '职场', '上班', '职位', '晋升', '跳槽', '求职'],
+            '感情': ['感情', '恋爱', '婚姻', '爱情', '对象', '伴侣', '分手', '复合'],
+            '财运': ['财运', '财富', '赚钱', '投资', '理财', '生意', '金钱', '收入'],
+            '学业': ['学业', '考试', '学习', '升学', '考研', '高考', '成绩'],
+            '健康': ['健康', '身体', '疾病', '就医', '治疗', '康复']
+        };
+        
+        var found = [];
+        for (var key in keywordMap) {
+            if (keywordMap[key].some(function(k) { return question.includes(k); })) {
+                found.push(key);
+            }
+        }
+        return found;
+    }
+    
+    function getKeywordAdvice(keyword, orig, chg) {
+        var adviceMap = {
+            '工作': {
+                positive: '事业顺遂，宜积极进取，把握机遇。',
+                neutral: '事业平稳，宜稳健经营，不宜冒进。',
+                negative: '事业受阻，宜守正待时，不宜妄动。'
+            },
+            '感情': {
+                positive: '感情和谐，良缘将至，宜主动追求。',
+                neutral: '感情平稳，宜耐心经营，顺其自然。',
+                negative: '感情有阻，宜冷静思考，审慎抉择。'
+            },
+            '财运': {
+                positive: '财运亨通，财源广进，宜把握良机。',
+                neutral: '财运平稳，宜积少成多，稳健理财。',
+                negative: '财运欠佳，宜守财节流，谨慎投资。'
+            },
+            '学业': {
+                positive: '学业有成，考试顺利，宜再接再厉。',
+                neutral: '学业平稳，宜踏实努力，循序渐进。',
+                negative: '学业受阻，宜查漏补缺，加倍努力。'
+            },
+            '健康': {
+                positive: '身体健康，精力充沛，宜保持良好习惯。',
+                neutral: '身体平稳，宜劳逸结合，注意调养。',
+                negative: '健康有忧，宜及时就医，注意休息。'
+            }
+        };
+        
+        var hexNum = orig.id;
+        var level = 'neutral';
+        if (hexNum <= 20) level = 'positive';
+        else if (hexNum >= 50) level = 'negative';
+        
+        return adviceMap[keyword][level] + ' ';
+    }
+
     // —— 结果渲染 ——
     function renderResult() {
         var r = state.result;
@@ -201,6 +327,36 @@
         state = { step: 0, question: '', now: '', result: null };
         showPage('input');
         window.scrollTo(0, 0);
+    });
+
+    // —— 本地解卦 ——
+    document.getElementById('btn-local-interpret').addEventListener('click', function () {
+        var r = state.result;
+        if (!r) return;
+        
+        var interpretation = generateInterpretation();
+        var displayEl = document.getElementById('local-interpret-display');
+        
+        var html = '';
+        if (interpretation.hexagramText) {
+            html += '<h3 class="section-title">【本卦卦辞】</h3>' +
+                    '<p class="interpret-text">' + interpretation.hexagramText + '</p>' +
+                    '<p class="interpret-text dialect">' + interpretation.hexagramTrans + '</p>';
+        }
+        
+        if (interpretation.movingYaoText) {
+            html += '<h3 class="section-title">【动爻详解】</h3>' +
+                    '<div class="moving-yao-list">' + interpretation.movingYaoText + '</div>';
+        }
+        
+        if (interpretation.advice) {
+            html += '<h3 class="section-title">【综合解读】</h3>' +
+                    '<div class="interpret-text ai-text">' + interpretation.advice + '</div>';
+        }
+        
+        displayEl.innerHTML = html;
+        displayEl.classList.remove('hidden');
+        window.scrollTo({ top: displayEl.offsetTop - 20, behavior: 'smooth' });
     });
 
     // —— 复制分享 ——
