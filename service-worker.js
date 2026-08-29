@@ -1,11 +1,13 @@
-/* 高岛易断 PWA Service Worker - 离线缓存 */
-const CACHE_NAME = 'gaodao-yiduan-v2025.6.12';
+/* 东观易 PWA Service Worker - 离线缓存 v2026.8.29 */
+const CACHE_NAME = 'dongguanyi-v2026.8.29-manual';
 const PRECACHE_URLS = [
     './',
     './index.html',
-    './style.css',
-    './guaData.js',
-    './main.js',
+    './style.css?v=20260829',
+    './guaData.js?v=20260829',
+    './guaExtra.js?v=20260829',
+    './dayan.js?v=20260829',
+    './main.js?v=20260829',
     './manifest.json'
 ];
 

@@ -527,7 +527,7 @@ const guaData = [
             { position: 6, text: '上九：姤其角，吝，无咎。', translation: '遇到角落。', interpretation: '相遇于末，虽吝无咎。' }
         ]
     },
-    { id: 45, upper: 8, lower: 2, name: '泽地萃', symbol: '䷬',
+    { id: 45, upper: 2, lower: 8, name: '泽地萃', symbol: '䷬',
         summary: { text: '泽上于地，君子以除戎器，戒不虞。', northeastDialect: '聚集汇聚，团结一心。' },
         hexagramText: '亨。王假有庙，利见大人。', hexagramTranslation: '亨通。君王到宗庙祭祀。',
         yaoTexts: [
@@ -539,7 +539,7 @@ const guaData = [
             { position: 6, text: '上六：赍咨涕洟，无咎。', translation: '叹息流泪。', interpretation: '忧惧谨慎，可保无咎。' }
         ]
     },
-    { id: 46, upper: 2, lower: 8, name: '地风升', symbol: '䷭',
+    { id: 46, upper: 8, lower: 5, name: '地风升', symbol: '䷭',
         summary: { text: '地中生木，升。君子以顺德，积小以高大。', northeastDialect: '上升发展，步步高升。' },
         hexagramText: '元亨，用见大人，勿恤，南征吉。', hexagramTranslation: '元始亨通，利于见大人。',
         yaoTexts: [
@@ -551,7 +551,7 @@ const guaData = [
             { position: 6, text: '上六：冥升，利于不息之贞。', translation: '幽冥中上升。', interpretation: '持续上升，永不停息。' }
         ]
     },
-    { id: 47, upper: 6, lower: 2, name: '泽水困', symbol: '䷮',
+    { id: 47, upper: 2, lower: 6, name: '泽水困', symbol: '䷮',
         summary: { text: '泽无水，困。君子以致命遂志。', northeastDialect: '困境之中，坚守志向。' },
         hexagramText: '亨，贞，大人吉，无咎。', hexagramTranslation: '亨通，守正。',
         yaoTexts: [
@@ -563,7 +563,7 @@ const guaData = [
             { position: 6, text: '上六：困于葛藟，于臲卼。', translation: '困于藤蔓之中。', interpretation: '困境已极，动则有悔。' }
         ]
     },
-    { id: 48, upper: 2, lower: 6, name: '水风井', symbol: '䷯',
+    { id: 48, upper: 6, lower: 5, name: '水风井', symbol: '䷯',
         summary: { text: '木上有水，井。君子以劳民劝相。', northeastDialect: '井水养人，源源不断。' },
         hexagramText: '改邑不改井，无丧无得。', hexagramTranslation: '城邑可改，水井不变。',
         yaoTexts: [
@@ -575,7 +575,7 @@ const guaData = [
             { position: 6, text: '上六：井收勿幕，有孚元吉。', translation: '井水已收，不加盖。', interpretation: '大功告成，至诚大吉。' }
         ]
     },
-    { id: 49, upper: 5, lower: 2, name: '泽火革', symbol: '䷰',
+    { id: 49, upper: 2, lower: 3, name: '泽火革', symbol: '䷰',
         summary: { text: '泽中有火，革。君子以治历明时。', northeastDialect: '变革创新，除旧布新。' },
         hexagramText: '巳日乃孚，元亨利贞，悔亡。', hexagramTranslation: '变革之日才有诚信。',
         yaoTexts: [
@@ -587,7 +587,7 @@ const guaData = [
             { position: 6, text: '上六：君子豹变，小人革面。', translation: '君子如豹变革。', interpretation: '变革已成，顺应民心。' }
         ]
     },
-    { id: 50, upper: 2, lower: 5, name: '火风鼎', symbol: '䷱',
+    { id: 50, upper: 3, lower: 5, name: '火风鼎', symbol: '䷱',
         summary: { text: '木上有火，鼎。君子以正位凝命。', northeastDialect: '鼎新革故，稳定发展。' },
         hexagramText: '元吉，亨。', hexagramTranslation: '大吉，亨通。',
         yaoTexts: [
@@ -623,7 +623,7 @@ const guaData = [
             { position: 6, text: '上九：敦艮，吉。', translation: '敦厚而止。', interpretation: '敦厚守正，终获吉祥。' }
         ]
     },
-    { id: 53, upper: 7, lower: 5, name: '风山渐', symbol: '䷴',
+    { id: 53, upper: 5, lower: 7, name: '风山渐', symbol: '䷴',
         summary: { text: '山上有木，渐。君子以居贤德善俗。', northeastDialect: '循序渐进，步步高升。' },
         hexagramText: '女归吉，利贞。', hexagramTranslation: '女子出嫁吉祥，利于守正。',
         yaoTexts: [
@@ -647,7 +647,7 @@ const guaData = [
             { position: 6, text: '上六：女承筐无实，士刲羊无血。', translation: '女子捧筐无实物。', interpretation: '有名无实，无所成就。' }
         ]
     },
-    { id: 55, upper: 4, lower: 5, name: '雷火丰', symbol: '䷶',
+    { id: 55, upper: 4, lower: 3, name: '雷火丰', symbol: '䷶',
         summary: { text: '雷电皆至，丰。君子以折狱致刑。', northeastDialect: '丰盛宏大，光明盛大。' },
         hexagramText: '亨，王假之，勿忧，宜日中。', hexagramTranslation: '亨通，君王亲临。',
         yaoTexts: [
@@ -659,7 +659,7 @@ const guaData = [
             { position: 6, text: '上六：丰其屋，蔀其家。', translation: '大其房屋，遮蔽其家。', interpretation: '盛极而衰，宜知进退。' }
         ]
     },
-    { id: 56, upper: 7, lower: 5, name: '火山旅', symbol: '䷷',
+    { id: 56, upper: 3, lower: 7, name: '火山旅', symbol: '䷷',
         summary: { text: '山上有火，旅。君子以明慎用刑而不留狱。', northeastDialect: '行旅在外，谨慎为要。' },
         hexagramText: '小亨，旅贞吉。', hexagramTranslation: '小亨通，行旅守正吉祥。',
         yaoTexts: [
@@ -707,7 +707,7 @@ const guaData = [
             { position: 6, text: '上九：涣其血，去逖出，无咎。', translation: '涣散其血。', interpretation: '解除危险，脱离忧患。' }
         ]
     },
-    { id: 60, upper: 2, lower: 6, name: '水泽节', symbol: '䷻',
+    { id: 60, upper: 6, lower: 2, name: '水泽节', symbol: '䷻',
         summary: { text: '泽上有水，节。君子以制数度，议德行。', northeastDialect: '节制有度，适可而止。' },
         hexagramText: '亨。苦节不可贞。', hexagramTranslation: '亨通。苦节不可守正。',
         yaoTexts: [
@@ -719,7 +719,7 @@ const guaData = [
             { position: 6, text: '上六：苦节，贞凶，悔亡。', translation: '苦于节制。', interpretation: '过度节制，必致凶险。' }
         ]
     },
-    { id: 61, upper: 2, lower: 5, name: '风泽中孚', symbol: '䷼',
+    { id: 61, upper: 5, lower: 2, name: '风泽中孚', symbol: '䷼',
         summary: { text: '泽上有风，中孚。君子以议狱缓死。', northeastDialect: '诚信中道，感化人心。' },
         hexagramText: '豚鱼吉，利涉大川，利贞。', hexagramTranslation: '小猪小鱼都吉祥。',
         yaoTexts: [
@@ -743,7 +743,7 @@ const guaData = [
             { position: 6, text: '上六：弗遇过之，飞鸟离之，凶。', translation: '不相遇而越过。', interpretation: '过之已甚，灾祸降临。' }
         ]
     },
-    { id: 63, upper: 6, lower: 5, name: '水火既济', symbol: '䷾',
+    { id: 63, upper: 6, lower: 3, name: '水火既济', symbol: '䷾',
         summary: { text: '水在火上，既济。君子以思患而豫防之。', northeastDialect: '已经成功，守成为要。' },
         hexagramText: '亨小，利贞，初吉终乱。', hexagramTranslation: '小亨通，利于守正。',
         yaoTexts: [
@@ -755,7 +755,7 @@ const guaData = [
             { position: 6, text: '上六：濡其首，厉。', translation: '浸湿头。', interpretation: '成功之后，更需谨慎。' }
         ]
     },
-    { id: 64, upper: 5, lower: 6, name: '火水未济', symbol: '䷿',
+    { id: 64, upper: 3, lower: 6, name: '火水未济', symbol: '䷿',
         summary: { text: '火在水上，未济。君子以慎辨物居方。', northeastDialect: '尚未成功，继续努力。' },
         hexagramText: '亨。小狐汔济，濡其尾，无攸利。', hexagramTranslation: '亨通。小狐将渡未渡。',
         yaoTexts: [

@@ -9,10 +9,13 @@
     <meta name="apple-mobile-web-app-title" content="东观易">
     <title>东观易 · 周易起卦</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260829e">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%237a4e1e' width='100' height='100'/%3E%3Ctext x='50' y='62' font-size='48' text-anchor='middle' fill='%23f3ead8' font-family='serif' font-weight='bold'%3E易%3C/text%3E%3C/svg%3E">
 </head>
 <body>
+    <!-- 粒子背景 -->
+    <canvas id="particle-canvas"></canvas>
+
     <div class="app" id="app">
 
         <!-- ============ 首页：输入 ============ -->
@@ -20,6 +23,7 @@
             <header class="banner">
                 <h1 class="title">东观易</h1>
                 <p class="subtitle">大衍筮法 · 正宗周易</p>
+                <div class="title-glow"></div>
             </header>
 
             <div class="card">
@@ -27,7 +31,11 @@
                 <textarea id="question" class="textarea" rows="4"
                     placeholder="例如：近期工作是否顺利？感情走向如何？……请诚心默念。"
                     maxlength="120"></textarea>
-                <button id="btn-start" class="btn primary">开始起卦</button>
+
+                <button id="btn-start" class="btn primary">
+                    <span class="btn-text">开始起卦</span>
+                    <span class="btn-glow"></span>
+                </button>
             </div>
 
             <div class="card info-card">
@@ -41,46 +49,94 @@
             </div>
 
             <footer class="footer">
-                <span>周易 · 64卦 · 大衍筮法（五十蓍草）</span>
+                <span>周易 · 64卦 · 大衍筮法 · v2026.8.28</span>
             </footer>
         </section>
 
         <!-- ============ 起卦动画 ============ -->
         <section class="page casting hidden" data-page="casting">
             <div class="cast-area">
-                <p class="yao-label" id="cast-step">第 1 步 / 共 18 步</p>
-                <p class="yao-progress" id="yao-progress">完成 0 变</p>
-                
-                <!-- 蓍草动画区域 -->
-                <div class="stalks" id="stalks">
-                    <div class="stalk-row">
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
+                <!-- 顶部状态 -->
+                <div class="cast-header">
+                    <p class="yao-label" id="cast-step">第 1 爻 · 第 1 变</p>
+                    <p class="yao-progress" id="yao-progress">完成 0 / 18 变</p>
+                </div>
+
+                <!-- 蓍草分揲可视化 -->
+                <div class="stalks-stage" id="stalks-stage">
+                    <!-- 太极（不用的那根） -->
+                    <div class="taiji" id="taiji">
+                        <div class="taiji-symbol">☯</div>
+                        <span class="taiji-label">太极</span>
                     </div>
-                    <div class="stalk-row">
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
-                        <span class="stalk">│</span>
+
+                    <!-- 左右两堆蓍草 -->
+                    <div class="stalks-piles">
+                        <div class="pile pile-left" id="pile-left">
+                            <div class="pile-count" id="count-left">0</div>
+                            <div class="pile-stalks" id="stalks-left"></div>
+                            <span class="pile-label">天</span>
+                        </div>
+
+                        <!-- 挂一 -->
+                        <div class="gua-yi" id="gua-yi">
+                            <div class="gua-yi-stalk" id="gua-yi-stalk"></div>
+                            <span class="gua-yi-label">挂一</span>
+                        </div>
+
+                        <div class="pile pile-right" id="pile-right">
+                            <div class="pile-count" id="count-right">0</div>
+                            <div class="pile-stalks" id="stalks-right"></div>
+                            <span class="pile-label">地</span>
+                        </div>
+                    </div>
+
+                    <!-- 归奇 -->
+                    <div class="gui-ji" id="gui-ji">
+                        <div class="gui-ji-stalks" id="gui-ji-stalks"></div>
+                        <span class="gui-ji-label">归奇</span>
+                        <span class="gui-ji-count" id="gui-ji-count">0</span>
+                    </div>
+
+                    <!-- 剩余总数 -->
+                    <div class="remaining" id="remaining">
+                        <span class="remaining-label">剩余蓍草</span>
+                        <span class="remaining-number" id="remaining-number">49</span>
                     </div>
                 </div>
-                
-                <!-- 爻生成显示区域 -->
+
+                <!-- 当前操作提示 -->
+                <div class="operation-hint" id="operation-hint">
+                    <span class="op-icon" id="op-icon">✋</span>
+                    <span class="op-text" id="op-text">静心凝神，拖动滑块将四十九根蓍草随意分为左右两堆</span>
+                </div>
+
+                <!-- 手动操作区 -->
+                <div class="manual-area" id="manual-area">
+                    <!-- 分二阶段：分二按钮 -->
+                    <div class="fen-er-panel" id="fen-er-panel">
+                        <div class="fener-info">
+                            <span class="fener-tip">静心凝神，默念所问之事，点击「分二」，将四十九根蓍草分而为二，以象天地</span>
+                        </div>
+                        <button id="btn-fen-er" class="btn primary fener-btn">
+                            <span class="btn-text">分 二</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                        <div class="slider-hint">（回车也可确认）</div>
+                    </div>
+
+                    <!-- 揲四归奇阶段（自动） -->
+                    <div class="diesi-panel hidden" id="diesi-panel">
+                        <p class="panel-text" id="diesi-text">正在四根四根地数……</p>
+                    </div>
+                </div>
+
+                <!-- 六爻生成展示 -->
                 <div class="yao-display" id="yao-display">
                     <!-- 动态生成的爻 -->
                 </div>
-                
-                <p class="yao-hint" id="cast-hint">静心凝神，默念所问之事……</p>
-                <button id="btn-next" class="btn primary">继续</button>
-                <p class="method-note">大衍之数五十，其用四十有九</p>
+
+                <p class="method-note">大衍之数五十，其用四十有九 · 手动分二，心诚则灵</p>
             </div>
         </section>
 
@@ -105,6 +161,13 @@
                     <span class="gua-detail" id="orig-detail">—</span>
                 </div>
                 <span class="arrow">➜</span>
+                <div class="gua-box" id="nuclear-box" style="display:none;">
+                    <span class="gua-role">互卦</span>
+                    <span class="gua-symbol" id="nuc-symbol">䷀</span>
+                    <span class="gua-name" id="nuc-name">—</span>
+                    <span class="gua-detail" id="nuc-detail">—</span>
+                </div>
+                <span class="arrow" id="nuc-arrow" style="display:none;">➜</span>
                 <div class="gua-box">
                     <span class="gua-role">变卦</span>
                     <span class="gua-symbol" id="chg-symbol">䷀</span>
@@ -136,14 +199,15 @@
                 <!-- 本地解卦内容将动态生成 -->
             </div>
 
-            <p class="version">东观易 v2025.6.12 · 大衍筮法</p>
+            <p class="version">东观易 v2026.8.28 · 大衍筮法</p>
         </section>
 
     </div>
 
-    <script src="guaData.js"></script>
-    <script src="dayan.js"></script>
-    <script src="main.js"></script>
+    <script src="guaData.js?v=20260829e"></script>
+    <script src="guaExtra.js?v=20260829e"></script>
+    <script src="dayan.js?v=20260829e"></script>
+    <script src="main.js?v=20260829e"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
