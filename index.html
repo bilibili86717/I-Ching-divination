@@ -22,7 +22,7 @@
         <section class="page input" data-page="input">
             <header class="banner">
                 <h1 class="title">东观易</h1>
-                <p class="subtitle">大衍筮法 · 正宗周易</p>
+                <p class="subtitle">大衍筮法起卦 · 六爻预测（纳甲法）解卦</p>
                 <div class="title-glow"></div>
             </header>
 
@@ -44,7 +44,7 @@
                     <p><strong>大衍之数五十，其用四十有九</strong></p>
                     <p>每爻经过「分二→挂一→揲四→归奇」三次操作，共六爻十八变。</p>
                     <p>六爻全部生成后，老阳(9)变阴，老阴(6)变阳，少阳(7)少阴(8)不变。</p>
-                    <p class="hint-text">💡 起卦后点击「复制卦象 去AI解读」，可粘贴到豆包/通义千问获取高岛易断风格的详细解读</p>
+                    <p class="hint-text">💡 起卦后点击「复制卦象 去AI解读」，可粘贴到豆包/通义千问获取六爻预测（纳甲法）的详细解读，含东北大白话版</p>
                 </div>
             </div>
 
@@ -191,12 +191,12 @@
 
             <div class="btn-row">
                 <button class="btn ghost" id="btn-restart">重新起卦</button>
-                <button class="btn secondary" id="btn-local-interpret">本地解卦</button>
+                <button class="btn secondary" id="btn-liuyao">六爻预测</button>
                 <button class="btn primary" id="btn-share">复制卦象 去AI解读</button>
             </div>
 
-            <div class="interpret-card hidden" id="local-interpret-display">
-                <!-- 本地解卦内容将动态生成 -->
+            <div class="interpret-card hidden" id="liuyao-display">
+                <!-- 六爻预测内容将动态生成 -->
             </div>
 
             <p class="version">东观易 v2026.8.28 · 大衍筮法</p>
@@ -204,10 +204,11 @@
 
     </div>
 
-    <script src="guaData.js?v=20260829e"></script>
-    <script src="guaExtra.js?v=20260829e"></script>
-    <script src="dayan.js?v=20260829e"></script>
-    <script src="main.js?v=20260829e"></script>
+    <script src="guaData.js?v=20260829n"></script>
+    <script src="guaExtra.js?v=20260829n"></script>
+    <script src="liuyao.js?v=20260829n"></script>
+    <script src="dayan.js?v=20260829n"></script>
+    <script src="main.js?v=20260829n"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

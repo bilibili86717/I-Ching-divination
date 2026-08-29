@@ -466,6 +466,67 @@
         });
     }
 
+    // ========== 六爻预测 ==========
+    function showLiuYao() {
+        var display = $('liuyao-display');
+        var result = state.castResult;
+        if (!result || typeof LiuYao === 'undefined') {
+            display.innerHTML = '<p>六爻预测模块未加载</p>';
+            display.classList.remove('hidden');
+            return;
+        }
+
+        var analysis = LiuYao.analyze(result);
+        display.innerHTML = '';
+        display.classList.remove('hidden');
+
+        // 基本信息
+        var infoSec = document.createElement('div');
+        infoSec.className = 'interpret-section';
+        infoSec.innerHTML = '<h4>【六爻排盘】</h4>' +
+            '<p><strong>卦名：</strong>' + result.originalGua.name + '（' + analysis.gong + '·' + analysis.gongWuxing + '·' + analysis.guaType + '）</p>' +
+            '<p><strong>月建：</strong>' + analysis.yueJian + '月 · <strong>日辰：</strong>' + analysis.riChen + '日</p>' +
+            '<p><strong>世爻：</strong>第' + analysis.shiYing.shi + '爻 · <strong>应爻：</strong>第' + analysis.shiYing.ying + '爻</p>' +
+            '<p><strong>用神：</strong>' + analysis.yongShen.type + '（' + analysis.yongShen.reason + '）</p>';
+        display.appendChild(infoSec);
+
+        // 六爻表格（从上爻到初爻）
+        var tableSec = document.createElement('div');
+        tableSec.className = 'interpret-section';
+        var tableHtml = '<h4>【六爻明细】</h4>' +
+            '<table class="liuyao-table">' +
+            '<tr><th>爻位</th><th>阴阳</th><th>纳甲</th><th>六亲</th><th>五行</th><th>旺衰</th><th>世应</th><th>动爻</th></tr>';
+        for (var i = 5; i >= 0; i--) {
+            var y = analysis.yaoAnalysis[i];
+            var wangshuaiClass = y.wangshuaiScore >= 4 ? 'wang' : y.wangshuaiScore <= 2 ? 'shuai' : '';
+            tableHtml += '<tr>' +
+                '<td>第' + y.position + '爻</td>' +
+                '<td>' + (y.isYang ? '━━━ 阳' : '━ ━ 阴') + '</td>' +
+                '<td>' + y.ganzhi + '</td>' +
+                '<td>' + y.liuQin + '</td>' +
+                '<td>' + y.wuxing + '</td>' +
+                '<td class="' + wangshuaiClass + '">' + y.wangshuai + '</td>' +
+                '<td>' + (y.isShi ? '世' : y.isYing ? '应' : '') + '</td>' +
+                '<td>' + (y.isMoving ? '○ 动' : '') + '</td>' +
+                '</tr>';
+        }
+        tableHtml += '</table>';
+        tableSec.innerHTML = tableHtml;
+        display.appendChild(tableSec);
+
+        // 综合判断
+        var judgeSec = document.createElement('div');
+        judgeSec.className = 'interpret-section';
+        judgeSec.innerHTML = '<h4>【综合判断】</h4>' +
+            '<pre class="liuyao-judgment">' + analysis.judgment + '</pre>';
+        display.appendChild(judgeSec);
+
+        // 滚动到六爻预测区
+        setTimeout(function () {
+            display.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
     // ========== 本地解卦 ==========
     function showLocalInterpret() {
         var display = $('local-interpret-display');
@@ -564,21 +625,6 @@
             '<p>建议：静则守' + orig.name + '之道，动则察' + chg.name + '之机。' + (properCount >= 4 ? '爻位多当位，行事较为顺遂。' : '爻位失位较多，需谨慎调整。') + '</p>';
         display.appendChild(sec6);
 
-        // 7. 高岛占例
-        if (extra.cases && extra.cases.length > 0) {
-            var sec7 = document.createElement('div');
-            sec7.className = 'interpret-section';
-            sec7.innerHTML = '<h4>【高岛易断风格占例参考】</h4>';
-            extra.cases.forEach(function (c) {
-                var item = document.createElement('div');
-                item.className = 'case-item';
-                item.innerHTML = '<div class="case-title">' + c.category + ' · ' + c.title + '</div>' +
-                    '<div class="case-text">' + c.content + '</div>';
-                sec7.appendChild(item);
-            });
-            display.appendChild(sec7);
-        }
-
         setTimeout(function () {
             display.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
@@ -595,8 +641,9 @@
         var nuclear = window.Dayan.getNuclearGua(result);
         var positions = window.Dayan.analyzeYaoPositions(result);
         var rule = window.Dayan.getDivinationRule(result);
+        var liuyao = (typeof LiuYao !== 'undefined') ? LiuYao.analyze(result) : null;
 
-        var text = '【周易起卦 · 大衍筮法】\n';
+        var text = '【周易起卦 · 大衍筮法 + 六爻预测（纳甲法）】\n';
         text += '问事：' + result.question + '\n';
         text += '时间：' + new Date(result.timestamp).toLocaleString('zh-CN') + '\n\n';
         text += '━━━ 六爻 ━━━\n';
@@ -611,6 +658,22 @@
         if (extra.xiangText) text += '象曰：' + extra.xiangText + '\n';
         if (nuclear.gua) text += '互卦：' + nuclear.gua.name + ' ' + nuclear.gua.symbol + '\n';
         text += '变卦：' + chg.name + ' ' + chg.symbol + '\n';
+
+        // 六爻排盘
+        if (liuyao) {
+            text += '\n━━━ 六爻排盘（纳甲法）━━━\n';
+            text += '宫位：' + liuyao.gong + '（' + liuyao.gongWuxing + '）· ' + liuyao.guaType + '\n';
+            text += '月建：' + liuyao.yueJian + '月 · 日辰：' + liuyao.riChen + '日\n';
+            text += '世爻：第' + liuyao.shiYing.shi + '爻 · 应爻：第' + liuyao.shiYing.ying + '爻\n';
+            text += '用神：' + liuyao.yongShen.type + '（' + liuyao.yongShen.reason + '）\n\n';
+            text += '爻位  阴阳    纳甲    六亲  五行  旺衰  世应  动爻\n';
+            text += '────────────────────────────────────────\n';
+            for (var j = 5; j >= 0; j--) {
+                var ly = liuyao.yaoAnalysis[j];
+                text += '第' + ly.position + '爻  ' + (ly.isYang ? '━━━阳' : '━ ━阴') + '  ' + ly.ganzhi + '  ' + ly.liuQin + '  ' + ly.wuxing + '  ' + ly.wangshuai + '  ' + (ly.isShi ? '世' : ly.isYing ? '应' : ' ') + '   ' + (ly.isMoving ? '○动' : '') + '\n';
+            }
+            text += '\n' + liuyao.judgment + '\n';
+        }
 
         if (result.movingLines.length > 0) {
             text += '\n━━━ 动爻 ━━━\n';
@@ -631,15 +694,20 @@
         });
 
         text += '\n━━━ 请按以下要求解读 ━━━\n';
-        text += '你是精通《高岛易断》的占卜顾问，严格仅引用《高岛易断》原文，禁止掺杂其他流派。\n';
-        text += '请按以下结构输出：\n';
-        text += '1. 卦象总断：结合本卦卦辞、彖辞、象辞，给出整体吉凶判断\n';
-        text += '2. 动爻详解：逐条解释动爻爻辞及其对所问之事的具体影响\n';
-        text += '3. 互卦启示：分析互卦所代表的中间过程和内在趋势\n';
-        text += '4. 爻位分析：结合当位、相应、承乘关系，分析各爻态势\n';
-        text += '5. 变卦趋势：分析从本卦到变卦的发展方向和最终结果\n';
-        text += '6. 高岛占例：引用《高岛易断》中与本卦相关的占例作为参考\n';
-        text += '7. 行动建议：针对所问之事，给出具体、可操作的建议\n';
+        text += '你是精通周易六爻预测（纳甲法）的占卜师傅，算卦几十年，说话直来直去，同时也是个地道东北人。\n';
+        text += '\n请严格基于上面的六爻排盘和卦象数据，紧扣「所问之事」进行解读，不要泛泛而谈。按以下结构输出：\n';
+        text += '\n1. 【用神与旺衰】\n';
+        text += '明确取什么为用神、为什么。分析用神在月建日辰下的旺相休囚死，有没有日冲日合，这是判断吉凶的基础。\n';
+        text += '\n2. 【六爻核心判断】\n';
+        text += '分析动爻对用神的生克（动爻生用神=有贵人，动爻克用神=有阻碍）、世应关系（应生世=得助，应克世=受压）、原神忌神情况。这部分是核心，要讲清楚吉凶的原因。\n';
+        text += '\n3. 【卦象与趋势】\n';
+        text += '结合本卦卦辞、动爻爻辞、互卦（中间过程）、变卦（最终结果），分析事情的发展方向和应期大概在什么时候。\n';
+        text += '\n4. 【综合结论】\n';
+        text += '用一句话明确说：吉还是凶，能成还是不能成，为什么。不要模棱两可。\n';
+        text += '\n5. 【行动建议】\n';
+        text += '针对所问之事，给出3条具体、可操作的建议。该干啥、不该干啥，说清楚。\n';
+        text += '\n6. 【东北大白话版】\n';
+        text += '用东北话把上面的结论和建议再说一遍。要接地气，多用东北常用词和语气词（啥、咋、整、唠、呗、啊、哎呀妈呀），可以整点歇后语，别整文绉绉的。最后给一句最直白的总结。\n';
         text += '\n所问之事：' + result.question + '\n';
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -723,8 +791,9 @@
             showPage('input');
         });
 
-        $('btn-local-interpret').addEventListener('click', function () {
-            showLocalInterpret();
+        // 六爻预测
+        $('btn-liuyao').addEventListener('click', function () {
+            showLiuYao();
         });
 
         $('btn-share').addEventListener('click', function () {
