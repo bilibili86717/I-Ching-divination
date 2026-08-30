@@ -334,58 +334,67 @@
         $('manual-area').style.display = 'none';
 
         setTimeout(function () {
-            var result = {
-                method: 'dayan',
-                question: state.question,
-                yaoResults: state.yaoResults,
-                movingLines: [],
-                timestamp: Date.now()
-            };
+            try {
+                var result = {
+                    method: 'dayan',
+                    question: state.question,
+                    yaoResults: state.yaoResults,
+                    movingLines: [],
+                    timestamp: Date.now()
+                };
 
-            // 计算本卦
-            var lowerBin = 0, upperBin = 0;
-            for (var i = 0; i < 3; i++) {
-                if (state.yaoResults[i].isYang) lowerBin |= (1 << i);
-            }
-            for (var j = 3; j < 6; j++) {
-                if (state.yaoResults[j].isYang) upperBin |= (1 << (j - 3));
-            }
-            var trigramBinary = {1:7,2:3,3:5,4:1,5:6,6:2,7:4,8:0};
-            var lowerTri = 0, upperTri = 0;
-            for (var t = 1; t <= 8; t++) {
-                if (trigramBinary[t] === lowerBin) lowerTri = t;
-                if (trigramBinary[t] === upperBin) upperTri = t;
-            }
-            result.originalGua = window.Dayan.findGua(upperTri, lowerTri);
-
-            // 计算动爻和变卦
-            var changedYao = state.yaoResults.map(function (y) {
-                if (y.isMoving) {
-                    result.movingLines.push(y.position);
-                    return { isYang: !y.isYang, isMoving: false, value: y.isYang ? 8 : 7 };
+                // 计算本卦
+                var lowerBin = 0, upperBin = 0;
+                for (var i = 0; i < 3; i++) {
+                    if (state.yaoResults[i] && state.yaoResults[i].isYang) lowerBin |= (1 << i);
                 }
-                return { isYang: y.isYang, isMoving: false, value: y.value };
-            });
+                for (var j = 3; j < 6; j++) {
+                    if (state.yaoResults[j] && state.yaoResults[j].isYang) upperBin |= (1 << (j - 3));
+                }
+                var trigramBinary = {1:7,2:3,3:5,4:1,5:6,6:2,7:4,8:0};
+                var lowerTri = 0, upperTri = 0;
+                for (var t = 1; t <= 8; t++) {
+                    if (trigramBinary[t] === lowerBin) lowerTri = t;
+                    if (trigramBinary[t] === upperBin) upperTri = t;
+                }
+                result.originalGua = window.Dayan.findGua(upperTri, lowerTri);
+                if (!result.originalGua) {
+                    console.error('未找到本卦: upper=' + upperTri + ', lower=' + lowerTri + ', upperBin=' + upperBin + ', lowerBin=' + lowerBin);
+                    result.originalGua = guaData[0]; //  fallback to 乾为天
+                }
 
-            var cLowerBin = 0, cUpperBin = 0;
-            for (var k = 0; k < 3; k++) {
-                if (changedYao[k].isYang) cLowerBin |= (1 << k);
-            }
-            for (var m = 3; m < 6; m++) {
-                if (changedYao[m].isYang) cUpperBin |= (1 << (m - 3));
-            }
-            var cLowerTri = 0, cUpperTri = 0;
-            for (var n = 1; n <= 8; n++) {
-                if (trigramBinary[n] === cLowerBin) cLowerTri = n;
-                if (trigramBinary[n] === cUpperBin) cUpperTri = n;
-            }
-            result.changedGua = window.Dayan.findGua(cUpperTri, cLowerTri);
-            if (!result.changedGua) result.changedGua = result.originalGua;
+                // 计算动爻和变卦
+                var changedYao = state.yaoResults.map(function (y) {
+                    if (y.isMoving) {
+                        result.movingLines.push(y.position);
+                        return { isYang: !y.isYang, isMoving: false, value: y.isYang ? 8 : 7 };
+                    }
+                    return { isYang: y.isYang, isMoving: false, value: y.value };
+                });
 
-            state.castResult = result;
-            renderResult(result);
-            saveHistory(result);
-            showPage('result');
+                var cLowerBin = 0, cUpperBin = 0;
+                for (var k = 0; k < 3; k++) {
+                    if (changedYao[k] && changedYao[k].isYang) cLowerBin |= (1 << k);
+                }
+                for (var m = 3; m < 6; m++) {
+                    if (changedYao[m] && changedYao[m].isYang) cUpperBin |= (1 << (m - 3));
+                }
+                var cLowerTri = 0, cUpperTri = 0;
+                for (var n = 1; n <= 8; n++) {
+                    if (trigramBinary[n] === cLowerBin) cLowerTri = n;
+                    if (trigramBinary[n] === cUpperBin) cUpperTri = n;
+                }
+                result.changedGua = window.Dayan.findGua(cUpperTri, cLowerTri);
+                if (!result.changedGua) result.changedGua = result.originalGua;
+
+                state.castResult = result;
+                renderResult(result);
+                saveHistory(result);
+                showPage('result');
+            } catch (e) {
+                console.error('起卦完成时出错:', e);
+                setOpHint('⚠', '推演出错: ' + e.message + '，请刷新重试');
+            }
 
             // 恢复操作区（下次起卦用）
             $('manual-area').style.display = '';
@@ -426,9 +435,6 @@
         $('chg-dialect').textContent = chg.summary.northeastDialect || chg.hexagramTranslation;
 
         renderYaoList(result);
-
-        $('local-interpret-display').classList.add('hidden');
-        $('local-interpret-display').innerHTML = '';
     }
 
     function renderYaoList(result) {
