@@ -120,8 +120,8 @@ const LiuYao = (function () {
             if (zhiWuxing === gongWuxing) return '兄弟';
             if (WUXING.sheng[gongWuxing] === zhiWuxing) return '子孙';
             if (WUXING.sheng[zhiWuxing] === gongWuxing) return '父母';
-            if (WUXING.ke[gongWuxing] === zhiWuxing) return '官鬼';
-            if (WUXING.ke[zhiWuxing] === gongWuxing) return '妻财';
+            if (WUXING.ke[zhiWuxing] === gongWuxing) return '官鬼';
+            if (WUXING.ke[gongWuxing] === zhiWuxing) return '妻财';
             return '兄弟';
         });
     }
@@ -135,18 +135,18 @@ const LiuYao = (function () {
         var day = date.getDate();
         // 节气近似日期
         var jieqi = [
-            { month: 2, day: 4, zhi: '寅' },   // 立春
-            { month: 3, day: 6, zhi: '卯' },   // 惊蛰
-            { month: 4, day: 5, zhi: '辰' },   // 清明
-            { month: 5, day: 6, zhi: '巳' },   // 立夏
-            { month: 6, day: 6, zhi: '午' },   // 芒种
-            { month: 7, day: 7, zhi: '未' },   // 小暑
-            { month: 8, day: 8, zhi: '申' },   // 立秋
-            { month: 9, day: 8, zhi: '酉' },   // 白露
-            { month: 10, day: 8, zhi: '戌' },  // 寒露
-            { month: 11, day: 7, zhi: '亥' },  // 立冬
-            { month: 12, day: 7, zhi: '子' },  // 大雪
-            { month: 1, day: 6, zhi: '丑' }    // 小寒
+            { month: 1, day: 6, zhi: "丑" },   // 小寒
+            { month: 2, day: 4, zhi: "寅" },   // 立春
+            { month: 3, day: 6, zhi: "卯" },   // 惊蛰
+            { month: 4, day: 5, zhi: "辰" },   // 清明
+            { month: 5, day: 6, zhi: "巳" },   // 立夏
+            { month: 6, day: 6, zhi: "午" },   // 芒种
+            { month: 7, day: 7, zhi: "未" },   // 小暑
+            { month: 8, day: 8, zhi: "申" },   // 立秋
+            { month: 9, day: 8, zhi: "酉" },   // 白露
+            { month: 10, day: 8, zhi: "戌" },  // 寒露
+            { month: 11, day: 7, zhi: "亥" },  // 立冬
+            { month: 12, day: 7, zhi: "子" }   // 大雪
         ];
         var zhi = '丑'; // 默认
         for (var i = 0; i < jieqi.length; i++) {
@@ -198,13 +198,13 @@ const LiuYao = (function () {
         if (/财运|发财|赚钱|投资|股票|基金|钱|财富|妻子|老婆|财产|交易|买卖|恋爱|感情|对象|女朋友/.test(q)) {
             return { type: '妻财', reason: '问财运/感情/财产，取妻财为用神' };
         }
-        // 父母：父母、长辈、文书、房屋、车辆、考试、学业
-        if (/父母|爸妈|父亲|母亲|长辈|老人|文书|文件|合同|房屋|房子|房产|车辆|车|考试|学业|学习|成绩|升学/.test(q)) {
-            return { type: '父母', reason: '问父母/文书/房屋/考试，取父母为用神' };
-        }
         // 子孙：子女、晚辈、动物、医药、解忧、下属
         if (/子女|儿子|女儿|孩子|晚辈|动物|宠物|猫|狗|医药|医生|医院|下属|员工|解忧|消灾/.test(q)) {
             return { type: '子孙', reason: '问子女/医药/动物，取子孙为用神' };
+        }
+        // 父母：父母、长辈、文书、房屋、车辆、考试、学业
+        if (/父母|爸妈|爸爸|妈妈|父亲|母亲|长辈|老人|文书|文件|合同|房屋|房子|房产|车辆|车|考试|学业|学习|成绩|升学/.test(q)) {
+            return { type: '父母', reason: '问父母/文书/房屋/考试，取父母为用神' };
         }
         // 兄弟：兄弟、朋友、同辈、竞争、合作
         if (/兄弟|哥哥|弟弟|姐妹|朋友|同事|同辈|竞争|对手|合作|合伙/.test(q)) {
